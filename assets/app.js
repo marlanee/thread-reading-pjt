@@ -123,9 +123,9 @@
     const liked = likedIds(); const id = button.dataset.like;
     if (store.set('likes', liked.includes(id) ? liked.filter(x => x !== id) : [...liked, id])) renderLikes();
   });
-  function paginate(target, current, pages, onChange) {
+  function paginate(target, current, pages, onChange, showSinglePage = false) {
     if (!target) return;
-    if (pages <= 1) { target.innerHTML = ''; return; }
+    if (pages < 1 || (pages === 1 && !showSinglePage)) { target.innerHTML = ''; return; }
     const nearby = new Set([1, pages, current - 1, current, current + 1].filter(p => p >= 1 && p <= pages));
     const numbers = [...nearby].sort((a, b) => a - b);
     target.innerHTML = `<li class="page-item ${current === 1 ? 'disabled' : ''}"><button type="button" class="page-link" data-page="${current-1}" aria-label="이전 페이지" ${current === 1 ? 'disabled' : ''}>‹</button></li>` + numbers.map((n, i) => (i && n - numbers[i-1] > 1 ? '<li class="page-item disabled"><span class="page-link">…</span></li>' : '') + `<li class="page-item ${n === current ? 'active' : ''}"><button type="button" class="page-link" data-page="${n}" ${n === current ? 'aria-current="page"' : ''}>${n}</button></li>`).join('') + `<li class="page-item ${current === pages ? 'disabled' : ''}"><button type="button" class="page-link" data-page="${current+1}" aria-label="다음 페이지" ${current === pages ? 'disabled' : ''}>›</button></li>`;
@@ -143,7 +143,8 @@
     const entries = $$('.thread-entry'); const pages = Math.ceil(entries.length / 6);
     threadPage = Math.min(Math.max(page, 1), pages || 1);
     entries.forEach((el, i) => el.hidden = Math.floor(i/6) + 1 !== threadPage);
-    paginate($('#threadPagination'), threadPage, pages, page => { showMainThreadPage(page); $('#threads').scrollIntoView({ block: 'start' }); });
+    // Keep F306 pagination visible even when the thread list fits on one page.
+    paginate($('#threadPagination'), threadPage, pages, page => { showMainThreadPage(page); $('#threads').scrollIntoView({ block: 'start' }); }, true);
   }
   let currentBook = null;
   let detailThreadPage = 1;
