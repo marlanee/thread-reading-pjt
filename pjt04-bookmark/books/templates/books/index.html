@@ -1,0 +1,28 @@
+{% extends 'base.html' %}{% load static %}
+{% block title %}도서 목록{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <div class="hero-tag">YOUR NEXT CHAPTER</div>
+    <h1>일상에 쉼표 하나,<br>책 한 권의 여유.</h1>
+    <p>마음에 남는 문장과 새롭게 만나는 이야기.<br>당신의 취향이 쌓이는 작은 책장을 만들어 보세요.</p>
+    {% if user.is_authenticated %}<a class="btn btn-light" href="{% url 'books:create' %}">나의 책 기록하기 &nbsp; ↗</a>{% else %}<a class="btn btn-light" href="{% url 'accounts:signup' %}">내 책장 시작하기 &nbsp; ↗</a>{% endif %}
+  </div>
+  <div class="hero-art" aria-hidden="true">{% for book in featured_books %}<img class="hero-book" src="{% static book.cover_image %}" alt="">{% endfor %}</div>
+</section>
+<section aria-labelledby="book-list-heading">
+  <div class="section-top">
+    <div><p class="eyebrow mb-2">EXPLORE THE BOOKSHELF</p><h2 id="book-list-heading">지금, 펼쳐볼 책<span class="count-badge">{{ books|length }}권</span></h2></div>
+    <form class="search-box" method="get" role="search"><label for="book-search" class="visually-hidden">제목 또는 저자 검색</label><span aria-hidden="true">⌕</span><input id="book-search" type="search" name="q" value="{{ query }}" placeholder="책 제목이나 작가를 검색해 보세요" maxlength="100"><button class="btn btn-primary" type="submit">검색</button></form>
+  </div>
+  {% if query %}<p class="text-muted small">“{{ query }}” 검색 결과 · <a href="{% url 'books:index' %}">전체 도서 보기</a></p>{% endif %}
+  <div class="book-grid">
+    {% for book in books %}
+    <article class="book-tile">
+      <a class="book-cover-area" href="{% url 'books:detail' book.pk %}" aria-label="{{ book.title }} 상세 보기">{% if book.cover_image %}<img class="book-cover" loading="lazy" src="{% static book.cover_image %}" alt="{{ book.title }} 표지">{% else %}<div class="cover-placeholder" aria-hidden="true"><strong>{{ book.title|first }}</strong><span>BOOKMARK</span></div>{% endif %}</a>
+      <div class="tile-info"><h3><a href="{% url 'books:detail' book.pk %}">{{ book.title }}</a></h3><p class="tile-author" title="{{ book.author }}">{{ book.author }}</p><div class="tile-meta"><span class="rating"><span class="star">★</span> {{ book.rating }} <span class="text-muted fw-normal">/ 5</span></span><a href="{% url 'books:detail' book.pk %}">자세히 보기 ↗</a></div></div>
+    </article>
+    {% empty %}<div class="empty-state"><h3>{% if query %}검색 결과가 없어요{% else %}첫 번째 책을 기다리고 있어요{% endif %}</h3><p>{% if query %}다른 제목이나 작가 이름으로 다시 검색해 보세요.{% else %}마음에 남은 책 한 권으로 나만의 책장을 시작해 보세요.{% endif %}</p></div>{% endfor %}
+  </div>
+</section>
+{% endblock %}

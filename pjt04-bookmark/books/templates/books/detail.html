@@ -1,0 +1,9 @@
+{% extends 'base.html' %}{% load static %}{% block title %}{{ book.title }}{% endblock %}
+{% block content %}
+<a class="back-link" href="{% url 'books:index' %}">← 도서 목록으로</a>
+<article class="panel detail-panel">
+  <div class="detail-cover">{% if book.cover_image %}<img src="{% static book.cover_image %}" alt="{{ book.title }} 표지">{% else %}<div class="cover-placeholder" aria-hidden="true"><strong>{{ book.title|first }}</strong><span>BOOKMARK</span></div>{% endif %}</div>
+  <div><p class="eyebrow">BOOK DETAIL</p><h1>{{ book.title }}</h1><p class="detail-author">{{ book.author }}</p><span class="detail-rating"><span class="star">★</span> 회원 리뷰 평점 &nbsp; <strong>{{ book.rating }}</strong> / 5</span><h2 class="description-title">이 책의 이야기</h2><div class="book-description">{{ book.description|linebreaks }}</div>
+  {% if user.is_authenticated %}<div class="form-actions mt-4"><a class="btn btn-primary" href="{% url 'books:update' book.pk %}">수정하기</a><form method="post" action="{% url 'books:delete' book.pk %}" onsubmit="return confirm('이 도서를 삭제하시겠습니까?')">{% csrf_token %}<button class="btn btn-outline-danger" type="submit">삭제하기</button></form></div>{% endif %}</div>
+</article>
+{% endblock %}

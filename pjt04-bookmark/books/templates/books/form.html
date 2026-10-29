@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block title %}{{ title }}{% endblock %}{% block content %}
+<div class="form-intro"><a class="back-link" href="{% url 'books:index' %}">← 내 책장으로</a><div class="eyebrow">A PAGE TO REMEMBER</div><h1>{{ title }}</h1><p>책의 정보와 나의 평점을 차분히 기록해 보세요.</p></div>
+<div class="form-wrap mx-auto panel form-panel"><form method="post">{% csrf_token %}{% include 'form_fields.html' %}<div class="form-actions"><button class="btn btn-primary" type="submit">저장</button><a class="btn btn-outline-secondary" href="{% url 'books:index' %}">목록</a></div></form></div>
+{% endblock %}

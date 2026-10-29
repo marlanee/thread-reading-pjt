@@ -1,0 +1,7 @@
+{% extends 'base.html' %}{% block title %}{{ title }}{% endblock %}{% block content %}
+<div class="form-wrap mx-auto {% if title == '로그인' %}auth-compact{% endif %}">
+  <div class="form-intro"><div class="eyebrow">MY READING SPACE</div><h1>{{ title }}</h1><p>{% if title == '로그인' %}다시 만나 반가워요. 오늘은 어떤 책을 펼쳐볼까요?{% elif title == '회원가입' %}당신의 취향이 쌓이는 공간, 책갈피에 오신 것을 환영해요.{% elif title == '회원정보 수정' %}나를 더 잘 담는 독서 프로필로 바꿔보세요.{% else %}안전한 독서 생활을 위해 비밀번호를 변경하세요.{% endif %}</p></div>
+  <div class="panel form-panel"><form method="post">{% csrf_token %}{% include 'form_fields.html' %}<div class="form-actions"><button class="btn btn-primary {% if title == '로그인' %}w-100{% endif %}" type="submit">{{ title }}</button></div></form></div>
+  {% if title == '로그인' %}<p class="account-hint">아직 책갈피가 처음이신가요? &nbsp;<a href="{% url 'accounts:signup' %}">회원가입</a></p>{% elif title == '회원정보 수정' %}<p class="account-hint"><a href="{% url 'accounts:change_password' %}">비밀번호 변경</a> · <a href="{% url 'accounts:profile' %}">내 프로필</a></p>{% endif %}
+</div>
+{% endblock %}
